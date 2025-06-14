@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MedFort 4.0 - Official Medical Waste Certificate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Mono:wght@400;700&display=swap');
+
+    body {
+      background: #11131a;
+      font-family: 'Inter', Arial, sans-serif;
+      margin: 0;
+      color: #f5f7fa;
+    }
+    .receipt-container {
+      background: #191c23;
+      max-width: 680px;
+      margin: 48px auto 0 auto;
+      border-radius: 26px;
+      box-shadow: 0 10px 36px #3370ff44, 0 2.5px 0 #3370ff;
+      padding: 48px 48px 36px 48px;
+      border: 2.5px solid #3370ff33;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Office-style watermark, as a large cross diagonally */
+    .watermark {
+      pointer-events: none;
+      user-select: none;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 900px;
+      font-family: 'Inter', Arial, sans-serif;
+      font-weight: 700;
+      font-size: 4.8rem;
+      color: #223870;
+      opacity: 0.08;
+      z-index: 0;
+      white-space: nowrap;
+      transform: translate(-50%, -50%) rotate(-31deg);
+      letter-spacing: 0.10em;
+      text-align: center;
+    }
+    .medfort-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #223870;
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .medfort-logo {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .medfort-logo .logo-circle {
+      background: linear-gradient(135deg, #3370ff 60%, #7edfc7 100%);
+      height: 64px;
+      width: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 12px #3370ff22;
+    }
+    .medfort-logo .logo-circle span {
+      font-family: 'Fira Mono', monospace;
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.06em;
+      margin-top: -3px;
+    }
+    .medfort-logo .medfort-title {
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 2.3rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: #7edfc7;
+      line-height: 100%;
+      display: block;
+    }
+    .cert-badge {
+      background: linear-gradient(90deg,#3370ff 60%,#7edfc7 100%);
+      color: #fff;
+      font-family: 'Inter', Arial, sans-serif;
+      font-weight: 800;
+      font-size: 1.13em;
+      padding: 10px 28px;
+      border-radius: 18px;
+      letter-spacing: 0.03em;
+      box-shadow: 0 2px 10px #3370ff22;
+      border: 1.5px solid #192336;
+      text-shadow: 0 1px 3px #19233688;
+    }
+    .receipt-title {
+      text-align: center;
+      font-size: 1.38em;
+      color: #f5f7fa;
+      font-weight: 700;
+      margin-bottom: 7px;
+      letter-spacing: 0.01em;
+      margin-top: 14px;
+      position: relative;
+      z-index: 1;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .receipt-subtitle {
+      text-align: center;
+      color: #7edfc7;
+      font-size: 1.13em;
+      margin-bottom: 32px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      position: relative;
+      z-index: 1;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .receipt-table {
+      width: 100%;
+      margin-bottom: 22px;
+      border-collapse: collapse;
+      font-size: 1.16em;
+      background: #181b25;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 8px #3370ff18;
+      position: relative;
+      z-index: 1;
+      border: 1px solid #223870;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .receipt-table tr:nth-child(even) {
+      background: #162044;
+    }
+    .receipt-table td {
+      padding: 13px 11px;
+      border: none;
+      color: #eaf6ff;
+      vertical-align: middle;
+    }
+    .receipt-table td.label {
+      color: #7edfc7;
+      font-weight: 600;
+      width: 43%;
+      text-align: right;
+      padding-right: 20px;
+      font-size: 1em;
+      letter-spacing: 0.01em;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .receipt-table td.value {
+      font-weight: 700;
+      color: #f5f7fa;
+      font-size: 1.08em;
+      letter-spacing: 0.01em;
+      font-family: 'Fira Mono', monospace;
+      text-align: left;
+    }
+    .meta-section {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      margin-top: 28px;
+      margin-bottom: 10px;
+      padding: 18px 27px;
+      background: #11131a;
+      border-radius: 15px;
+      border: 1.8px solid #3370ff44;
+      box-shadow: 0 2px 8px #3370ff22;
+      position: relative;
+      z-index: 1;
+    }
+    .meta-section .metamask-logo {
+      width: 62px; height: 62px;
+      background: #fff;
+      border-radius: 14px;
+      border: 2px solid #e2eaff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px #ffd58044;
+      overflow: hidden;
+      margin-right: 6px;
+    }
+    .meta-section .metamask-logo svg {
+      width: 54px;
+      height: 54px;
+      display: block;
+    }
+    .meta-section .meta-label {
+      font-size: 1.18em;
+      color: #f68712;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      margin-bottom: 2px;
+      line-height: 120%;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .meta-section .meta-address {
+      font-size: 0.98em;
+      color: #a2b5d4;
+      font-weight: 400;
+      word-break: break-all;
+      margin-top: 3px;
+      display: block;
+      font-family: "Fira Mono", "Menlo", monospace;
+    }
+    .receipt-cert {
+      margin-top: 22px;
+      text-align: left;
+      font-size: 1.06em;
+      color: #a2b5d4;
+      word-break: break-all;
+      background: #162044;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1.5px solid #223870;
+      font-family: "Fira Mono", "Menlo", monospace;
+      position: relative;
+      z-index: 1;
+    }
+    .receipt-footer {
+      text-align: center;
+      margin-top: 45px;
+      color: #3370ff;
+      font-weight: 700;
+      font-size: 1.13em;
+      letter-spacing: 0.02em;
+      opacity: 0.96;
+      position: relative;
+      z-index: 1;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+    .print-btn {
+      display: block;
+      margin: 35px auto 0 auto;
+      padding: 13px 44px;
+      background: linear-gradient(90deg, #7edfc7 0%, #3370ff 100%);
+      color: #181a1e;
+      border: none;
+      border-radius: 13px;
+      font-size: 1.19em;
+      font-weight: 700;
+      font-family: 'Inter', Arial, sans-serif;
+      letter-spacing: 0.025em;
+      cursor: pointer;
+      box-shadow: 0 3px 17px #3370ff22;
+      transition: background 0.15s, color 0.15s;
+      outline: none;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 1px 2px #fff8;
+    }
+    .print-btn:hover {
+      background: linear-gradient(90deg, #3370ff 0%, #7edfc7 100%);
+      color: #fff;
+    }
+    @media (max-width: 900px) {
+      .receipt-container { max-width: 99vw; padding: 5vw 1vw 8vw 1vw;}
+    }
+    @media print {
+      body { background: #fff; color: #000; }
+      .receipt-container { box-shadow: none; border: none; margin: 0; }
+      .print-btn { display: none; }
+      .watermark { opacity: 0.13 }
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-container" id="receipt">
+    <div class="watermark">MEDFORT 4.0</div>
+    <div class="medfort-header">
+      <div class="medfort-logo">
+        <div class="logo-circle">
+          <span>M4</span>
+        </div>
+        <div class="medfort-title">MedFort 4.0</div>
+      </div>
+      <div class="cert-badge">CERTIFIED</div>
+    </div>
+    <div class="receipt-title">Medical Waste Disposal Certificate</div>
+    <div class="receipt-subtitle">Official Blockchain-Backed Proof of Hazardous Waste Disposal</div>
+    <table class="receipt-table">
+      <tr><td class="label">Date &amp; Time</td><td class="value" id="r-timestamp"></td></tr>
+      <tr><td class="label">Bin ID</td><td class="value" id="r-bin"></td></tr>
+      <tr><td class="label">Event Type</td><td class="value" id="r-event"></td></tr>
+      <tr><td class="label">Waste Type</td><td class="value" id="r-waste"></td></tr>
+      <tr><td class="label">Weight (kg)</td><td class="value" id="r-weight"></td></tr>
+      <tr><td class="label">Staff Name/ID</td><td class="value" id="r-staff"></td></tr>
+    </table>
+    <div class="meta-section">
+      <div class="metamask-logo">
+        <!-- Professional SVG MetaMask logo -->
+        <svg viewBox="0 0 318 318" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="265,38 163,113 280,83" fill="#E2761B"/>
+          <polygon points="53,38 154,114 38,83" fill="#E4761B"/>
+          <polygon points="252,208 233,236 297,250 314,213" fill="#E4761B"/>
+          <polygon points="5,213 22,250 86,236 67,208" fill="#E4761B"/>
+          <polygon points="93,130 80,152 147,154 146,90" fill="#E4761B"/>
+          <polygon points="224,130 171,90 169,154 236,152" fill="#E4761B"/>
+          <polygon points="80,236 147,222 92,176" fill="#763E1A"/>
+          <polygon points="171,222 237,236 227,176" fill="#763E1A"/>
+          <polygon points="237,236 171,222 176,261 176,292" fill="#F6851B"/>
+          <polygon points="80,236 147,222 142,261 142,292" fill="#F6851B"/>
+          <polygon points="127,245 146,261 176,261 196,245" fill="#C0AD9E"/>
+          <polygon points="297,80 280,83 252,208 314,213" fill="#E4761B"/>
+          <polygon points="21,213 67,208 38,83 21,80" fill="#E4761B"/>
+          <polygon points="22,250 142,292 142,261" fill="#D7C1B3"/>
+          <polygon points="297,250 176,292 176,261" fill="#D7C1B3"/>
+          <polygon points="176,187 227,176 176,222" fill="#763E1A"/>
+          <polygon points="142,187 92,176 142,222" fill="#763E1A"/>
+          <polygon points="176,261 176,292 142,292 142,261" fill="#1A1A1A"/>
+        </svg>
+      </div>
+      <div>
+        <div class="meta-label">Digitally Signed by MetaMask</div>
+        <span class="meta-address" id="r-address"></span>
+      </div>
+    </div>
+    <div class="receipt-cert">
+      <b>Blockchain Certificate ID:</b> <span id="r-cert"></span>
+    </div>
+    <button class="print-btn" onclick="window.print()">Print Certificate</button>
+    <div class="receipt-footer">
+      Powered by MedFort 4.0 &nbsp;|&nbsp; Secured with Blockchain &amp; MetaMask
+    </div>
+  </div>
+  <script>
+    // On page load, extract cert param and show receipt
+    function getBlockByCert(certId) {
+      try {
+        const chain = JSON.parse(localStorage.getItem('ecotrace_blockchain') || '[]');
+        return chain.find(b => b.certId === certId);
+      } catch { return null; }
+    }
+    function qs(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+    window.onload = function() {
+      const certId = qs("cert");
+      const block = getBlockByCert(certId);
+      if (!block) {
+        document.getElementById('receipt').innerHTML = '<div style="color:#e74c3c;font-size:1.15em;text-align:center;padding:80px 0 80px 0;">Certificate not found.</div>';
+        return;
+      }
+      document.getElementById('r-timestamp').textContent = block.timestamp || "-";
+      document.getElementById('r-bin').textContent = block.binId || "-";
+      document.getElementById('r-event').textContent = block.eventType || "-";
+      document.getElementById('r-waste').textContent = block.wasteType || "-";
+      document.getElementById('r-weight').textContent = block.weight || "-";
+      document.getElementById('r-staff').textContent = block.staffId || "-";
+      document.getElementById('r-address').textContent = block.address || "-";
+      document.getElementById('r-cert').textContent = block.certId || "-";
+    }
+  </script>
+</body>
+</html>
